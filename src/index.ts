@@ -30,7 +30,7 @@ async function routes(){
           })
         
           if(verifyIfExistsTask){
-            return res.status(400).json({error:"Essa tarefa ja existe!"})
+            return res.json("Essa tarefa ja existe!")
           }
 
         const newTask = await prisma.task.create({
