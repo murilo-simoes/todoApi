@@ -3,7 +3,9 @@ import express, {Request, Response} from 'express';
 import { prisma } from './database';
 
 async function routes(){
+    const cors = require("cors");
     const app = express();
+    app.use(cors())
     app.use(express.json())
     
     
