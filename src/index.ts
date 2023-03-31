@@ -49,7 +49,7 @@ async function routes(){
       return res.json(allTasks)
     })
 
-    app.get('/delTask', async (req: Request, res: Response,) => {
+    app.post('/delTask', async (req: Request, res: Response,) => {
 
       const {title} = req.body;
       const userToDelete = await searchUser(title);
