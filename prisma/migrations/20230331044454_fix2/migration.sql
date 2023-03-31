@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Task" ALTER COLUMN "desc" SET DEFAULT '',
+ALTER COLUMN "title" SET DEFAULT '';
