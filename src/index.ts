@@ -11,6 +11,10 @@ async function routes() {
     origin: "https://todo-web-one.vercel.app",
   };
 
+  app.get("/products/:id", function (req, res, next) {
+    res.json({ msg: "This is CORS-enabled for all origins!" });
+  });
+
   async function searchUser(title: string) {
     const query = await prisma.task.findFirst({
       where: {
@@ -98,7 +102,9 @@ async function routes() {
     }
   );
 
-  await app.listen(3333, () => console.log("Server is running"));
+  await app.listen(3333, function () {
+    console.log("CORS-enabled web server listening on port 80");
+  });
 }
 
 routes();
