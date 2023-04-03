@@ -11,10 +11,24 @@ async function routes() {
     origin: "https://todo-web-one.vercel.app",
   };
 
-  app.get("/products/:id", function (req, res, next) {
-    res.json({ msg: "This is CORS-enabled for all origins!" });
-  });
+  app.use(function (req, res, next) {
+    res.setHeader(
+      "Access-Control-Allow-Origin",
+      "https://todo-web-one.vercel.app"
+    );
 
+    res.setHeader(
+      "Access-Control-Allow-Methods",
+      "GET, POST, OPTIONS, PUT, PATCH, DELETE"
+    );
+
+    res.setHeader(
+      "Access-Control-Allow-Headers",
+      "X-Requested-With,content-type"
+    );
+
+    next();
+  });
   async function searchUser(title: string) {
     const query = await prisma.task.findFirst({
       where: {
