@@ -8,14 +8,11 @@ async function routes() {
   app.use(express.json());
 
   const corsOptions = {
-    origin: "https://todo-web-one.vercel.app",
+    origin: "https://todo-web-one.vercel.app/",
   };
 
   app.use(function (req, res, next) {
-    res.setHeader(
-      "Access-Control-Allow-Origin",
-      "https://todo-web-one.vercel.app"
-    );
+    res.setHeader("Access-Control-Allow-Origin", "*");
 
     res.setHeader(
       "Access-Control-Allow-Methods",
@@ -29,6 +26,7 @@ async function routes() {
 
     next();
   });
+
   async function searchUser(title: string) {
     const query = await prisma.task.findFirst({
       where: {
@@ -117,7 +115,7 @@ async function routes() {
   );
 
   await app.listen(3333, function () {
-    console.log("CORS-enabled web server listening on port 80");
+    console.log("CORS-enabled web server listening on port 3333");
   });
 }
 
