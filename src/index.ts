@@ -8,7 +8,7 @@ async function routes() {
   app.use(express.json());
 
   const corsOptions = {
-    origin: "https://todo-web-one.vercel.app/",
+    origin: "*",
   };
 
   app.use(function (req, res, next) {
