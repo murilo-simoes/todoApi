@@ -7,24 +7,12 @@ async function routes() {
   app.use(cors());
   app.use(express.json());
 
-  const corsOptions = {
-    origin: "*",
-  };
-
-  app.use(function (req, res, next) {
-    res.setHeader("Access-Control-Allow-Origin", "*");
-
+  app.get("/", (req: Request, res: Response) => {
     res.setHeader(
-      "Access-Control-Allow-Methods",
-      "GET, POST, OPTIONS, PUT, PATCH, DELETE"
+      "Access-Control-Allow-Origin",
+      "https://todo-web-one.vercel.app"
     );
-
-    res.setHeader(
-      "Access-Control-Allow-Headers",
-      "X-Requested-With,content-type"
-    );
-
-    next();
+    res.send("Lista de Tarefas");
   });
 
   async function searchUser(title: string) {
@@ -39,7 +27,7 @@ async function routes() {
 
   app.post(
     "/newTask",
-    cors(corsOptions),
+
     async (req: Request, res: Response) => {
       const { title, desc } = req.body;
 
@@ -63,7 +51,7 @@ async function routes() {
     }
   );
 
-  app.get("/tasks", cors(corsOptions), async (req: Request, res: Response) => {
+  app.get("/tasks", async (req: Request, res: Response) => {
     const allTasks = await prisma.task.findMany();
 
     return res.json(allTasks);
@@ -71,7 +59,7 @@ async function routes() {
 
   app.post(
     "/delTask",
-    cors(corsOptions),
+
     async (req: Request, res: Response) => {
       const { title } = req.body;
       const userToDelete = await searchUser(title);
@@ -92,7 +80,7 @@ async function routes() {
 
   app.post(
     "/upTask",
-    cors(corsOptions),
+
     async (req: Request, res: Response) => {
       const { title } = req.body;
       const userToChange = await searchUser(title);
@@ -114,9 +102,7 @@ async function routes() {
     }
   );
 
-  await app.listen(3333, function () {
-    console.log("CORS-enabled web server listening on port 3333");
-  });
+  await app.listen(3333);
 }
 
 routes();
