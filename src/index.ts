@@ -2,17 +2,15 @@ import express, { Request, Response } from "express";
 import { prisma } from "./database";
 
 async function routes() {
-  const cors = require("cors");
   const app = express();
-  app.use(cors());
+  const cors = require("cors");
   app.use(express.json());
 
-  app.get("/", (req: Request, res: Response) => {
-    res.setHeader(
-      "Access-Control-Allow-Origin",
-      "https://todo-web-one.vercel.app"
-    );
-    res.send("Lista de Tarefas");
+  app.use((req: Request, res: Response, next) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE");
+    app.use(cors());
+    next();
   });
 
   async function searchUser(title: string) {
