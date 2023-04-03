@@ -1,106 +1,102 @@
 import express, { Request, Response } from "express";
 import { prisma } from "./database";
 
-async function routes() {
-  const app = express();
-  const cors = require("cors");
-  app.use(express.json());
+const app = express();
+const cors = require("cors");
+app.use(express.json());
 
-  app.use((req: Request, res: Response, next) => {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE");
-    app.use(cors());
-    next();
+app.use((req: Request, res: Response, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE");
+  app.use(cors());
+  next();
+});
+
+async function searchUser(title: string) {
+  const query = await prisma.task.findFirst({
+    where: {
+      title: title,
+    },
   });
 
-  async function searchUser(title: string) {
-    const query = await prisma.task.findFirst({
+  return query;
+}
+
+app.post(
+  "/newTask",
+
+  async (req: Request, res: Response) => {
+    const { title, desc } = req.body;
+
+    const verifyIfExistsTask = await prisma.task.findFirst({
       where: {
-        title: title,
+        title,
       },
     });
 
-    return query;
+    if (verifyIfExistsTask) {
+      return res.json("Essa tarefa ja existe!");
+    }
+
+    const newTask = await prisma.task.create({
+      data: {
+        title,
+        desc,
+      },
+    });
+    return res.json(newTask);
   }
+);
 
-  app.post(
-    "/newTask",
+app.get("/tasks", async (req: Request, res: Response) => {
+  const allTasks = await prisma.task.findMany();
 
-    async (req: Request, res: Response) => {
-      const { title, desc } = req.body;
+  return res.json(allTasks);
+});
 
-      const verifyIfExistsTask = await prisma.task.findFirst({
-        where: {
-          title,
-        },
-      });
+app.post(
+  "/delTask",
 
-      if (verifyIfExistsTask) {
-        return res.json("Essa tarefa ja existe!");
-      }
+  async (req: Request, res: Response) => {
+    const { title } = req.body;
+    const userToDelete = await searchUser(title);
 
-      const newTask = await prisma.task.create({
-        data: {
-          title,
-          desc,
-        },
-      });
-      return res.json(newTask);
+    if (userToDelete === null) {
+      return res.status(400).json({ error: "Essa tarefa não existe!" });
     }
-  );
 
-  app.get("/tasks", async (req: Request, res: Response) => {
-    const allTasks = await prisma.task.findMany();
+    const delTask = await prisma.task.delete({
+      where: {
+        id: userToDelete?.id,
+      },
+    });
 
-    return res.json(allTasks);
-  });
+    return res.json("Tarefa Excluída");
+  }
+);
 
-  app.post(
-    "/delTask",
+app.post(
+  "/upTask",
 
-    async (req: Request, res: Response) => {
-      const { title } = req.body;
-      const userToDelete = await searchUser(title);
+  async (req: Request, res: Response) => {
+    const { title } = req.body;
+    const userToChange = await searchUser(title);
 
-      if (userToDelete === null) {
-        return res.status(400).json({ error: "Essa tarefa não existe!" });
-      }
-
-      const delTask = await prisma.task.delete({
-        where: {
-          id: userToDelete?.id,
-        },
-      });
-
-      return res.json("Tarefa Excluída");
+    if (userToChange === null) {
+      return res.status(400).json({ error: "Essa tarefa não existe!" });
     }
-  );
 
-  app.post(
-    "/upTask",
+    const updateTask = await prisma.task.update({
+      where: {
+        id: userToChange?.id,
+      },
+      data: {
+        isDone: userToChange?.isDone === false ? true : false,
+      },
+    });
 
-    async (req: Request, res: Response) => {
-      const { title } = req.body;
-      const userToChange = await searchUser(title);
+    return res.json(updateTask);
+  }
+);
 
-      if (userToChange === null) {
-        return res.status(400).json({ error: "Essa tarefa não existe!" });
-      }
-
-      const updateTask = await prisma.task.update({
-        where: {
-          id: userToChange?.id,
-        },
-        data: {
-          isDone: userToChange?.isDone === false ? true : false,
-        },
-      });
-
-      return res.json(updateTask);
-    }
-  );
-
-  await app.listen(3333);
-}
-
-routes();
+app.listen(3333);
