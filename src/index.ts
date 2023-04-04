@@ -4,13 +4,12 @@ import { prisma } from "./database";
 const express = require("express");
 const cors = require("cors");
 const app = express();
-app.use(cors());
 
-// app.use((req: Request, res: Response, next: any) => {
-//   res.header("Access-Control-Allow-Origin", "https://todo-web-one.vercel.app");
-//   res.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE");
-//   next();
-// });
+app.use((req: Request, res: Response, next: any) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE");
+  next();
+});
 
 async function searchUser(title: string) {
   const query = await prisma.task.findFirst({
@@ -27,13 +26,7 @@ app.post(
 
   async (req: Request, res: Response) => {
     const { title, desc } = req.body;
-
-    const verifyIfExistsTask = await prisma.task.findFirst({
-      where: {
-        title,
-      },
-    });
-
+    const verifyIfExistsTask = await searchUser(title);
     if (verifyIfExistsTask) {
       return res.json("Essa tarefa ja existe!");
     }
@@ -71,7 +64,7 @@ app.post(
       },
     });
 
-    return res.json("Tarefa Excluída");
+    return res.json(delTask);
   }
 );
 
