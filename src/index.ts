@@ -5,12 +5,11 @@ const express = require("express");
 const cors = require("cors");
 const app = express();
 
-app.use((req: Request, res: Response, next: any) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE");
-  app.use(cors());
-  next();
-});
+app.use(
+  cors({
+    origin: "*",
+  })
+);
 
 async function searchUser(title: string) {
   const query = await prisma.task.findFirst({
