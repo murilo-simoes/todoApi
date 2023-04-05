@@ -7,8 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "npx nodemon --exec ts-node src/index.ts",
     "vercel-build": "npx prisma migrate deploy",
-    "build": "rm -rf ./dist && tsc",
-    "start": "node ./dist/index.js"
+    "build": "tsup src",
+    "start": "node dist/index.js"
   },
   "keywords": [],
   "author": "",
