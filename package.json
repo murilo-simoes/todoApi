@@ -18,13 +18,13 @@
     "@types/node": "^18.15.11",
     "prisma": "^4.12.0",
     "ts-node": "^10.9.1",
+    "tsup": "^6.7.0",
     "typescript": "^5.0.3"
   },
   "dependencies": {
     "@prisma/client": "^4.12.0",
     "cors": "^2.8.5",
     "express": "^4.18.2",
-    "nodemon": "^2.0.22",
-    "tsup": "^6.7.0"
+    "nodemon": "^2.0.22"
   }
 }
